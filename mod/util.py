@@ -172,6 +172,12 @@ def get_project_name_from_dir(proj_dir) :
     return os.path.split(proj_dir)[1]
 
 #-------------------------------------------------------------------------------
+def get_platform_from_config(cfg_name) :
+    """extract the platform name from the config name
+    """
+    return cfg_name[0:cfg_name.find('-')]
+
+#-------------------------------------------------------------------------------
 def load_fips_yml(proj_dir) :
     """load the fips.yml file from project directory
 

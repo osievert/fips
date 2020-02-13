@@ -287,6 +287,54 @@ macro(fips_end_module)
 endmacro()
 
 #-------------------------------------------------------------------------------
+#   fips_begin_imported_module(module)
+#   Begin defining an fips module.
+#
+macro(fips_begin_imported_module name kind)
+    set(name ${name})
+    set(kind ${kind})
+    if (FIPS_CMAKE_VERBOSE)
+        message("Module: name=" ${name})
+    endif()
+    fips_reset(${name})
+endmacro()
+
+macro(fips_imported_location loc)
+    list(APPEND CurImportedLocation ${loc})
+endmacro()
+
+#-------------------------------------------------------------------------------
+#   fips_end_imported_module(module)
+#   End defining an fips module, the interesting stuff happens here.
+#
+macro(fips_end_imported_module)
+
+    # add library target
+    add_library(${CurTargetName} ${kind} IMPORTED GLOBAL)
+    if (${CurImportedLocation})
+        set_property(TARGET ${CurTargetName} PROPERTY IMPORTED_LOCATION ${CurImportedLocation})
+    endif()
+    if (NOT ${kind} STREQUAL "INTERFACE")
+    fips_apply_target_group(${CurTargetName})
+    endif()
+
+    # set platform- and target-specific compiler options
+    fips_vs_apply_options(${CurTargetName})
+
+    # add dependencies
+    fips_resolve_dependencies(${CurTargetName})
+
+    # handle generators (post-target)
+    fips_handle_generators(${CurTargetName})
+
+    # track some target properties in YAML files
+    fips_addto_targets_list(${CurTargetName} "module")
+    if (NOT ${kind} STREQUAL "INTERFACE")
+    fips_addto_headerdirs_list(${CurTargetName})
+    endif()
+    fips_addto_defines_list(${CurTargetName})
+endmacro()
+#-------------------------------------------------------------------------------
 #   fips_begin_lib(name)
 #   Begin defining a static link library
 #

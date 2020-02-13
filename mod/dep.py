@@ -23,7 +23,7 @@ def get_git_release_download(fips_dir, url):
 
 #-------------------------------------------------------------------------------
 def get_git_release_destdir(fips_dir, proj_name, platform):
-    return os.path.join(util.get_workspace_dir(fips_dir), '%s-%s' % (proj_name, platform))
+    return os.path.join(util.get_workspace_dir(fips_dir), proj_name)
 
 #-------------------------------------------------------------------------------
 def uncompress(fips_dir, path, destdir) :
@@ -250,13 +250,14 @@ def _rec_fetch_imports(fips_dir, proj_dir, platform, handled) :
                             log.error('failed to git clone {} into {}'.format(git_url, dep_proj_dir))
                     elif dep.get('git-release'):
                         git_release_url_template = dep['git-release']
-                        version = dep['version']
+                        version = dep.get('version')
                         # log.colored(log.YELLOW, "=== git release URL template = '{}'".format(git_release_url_template))
                         # log.colored(log.YELLOW, "=== platform = '{}'".format(platform))
 
                         # specialize the git release template string
                         git_release_url = git_release_url_template
-                        git_release_url = git_release_url.replace('$VERSION', version)
+                        if version:
+                            git_release_url = git_release_url.replace('$VERSION', version)
                         git_release_url = git_release_url.replace('$PLATFORM', platform)
                         git_release_download = get_git_release_download(fips_dir, git_release_url)
                         git_release_destdir = get_git_release_destdir(fips_dir, dep_proj_name, platform)

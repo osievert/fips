@@ -48,7 +48,7 @@ def clone(fips_dir, url) :
         git_branch = util.get_gitbranch_from_url(url)
         if git.clone(git_url, git_branch, git.clone_depth, proj_name, ws_dir) :
             # fetch imports
-            dep.fetch_imports(fips_dir, proj_dir)
+            dep.fetch_imports(fips_dir, proj_dir, util.get_platform_from_config(cfg_name))
             return True
         else :
             log.error("failed to 'git clone {}' into '{}'".format(url, proj_dir))
@@ -113,7 +113,7 @@ def gen(fips_dir, proj_dir, cfg_name) :
     """
 
     # prepare
-    dep.fetch_imports(fips_dir, proj_dir)
+    dep.fetch_imports(fips_dir, proj_dir, util.get_platform_from_config(cfg_name))
     proj_name = util.get_project_name_from_dir(proj_dir)
     util.ensure_valid_project_dir(proj_dir)
     dep.gather_and_write_imports(fips_dir, proj_dir, cfg_name)
@@ -151,7 +151,7 @@ def configure(fips_dir, proj_dir, cfg_name) :
     :cfg_name:          build config name
     """
 
-    dep.fetch_imports(fips_dir, proj_dir)
+    dep.fetch_imports(fips_dir, proj_dir, util.get_platform_from_config(cfg_name))
     proj_name = util.get_project_name_from_dir(proj_dir)
     util.ensure_valid_project_dir(proj_dir)
     dep.gather_and_write_imports(fips_dir, proj_dir, cfg_name)
@@ -235,7 +235,7 @@ def build(fips_dir, proj_dir, cfg_name, target=None, build_tool_args=None) :
     """
 
     # prepare
-    dep.fetch_imports(fips_dir, proj_dir)
+    dep.fetch_imports(fips_dir, proj_dir, util.get_platform_from_config(cfg_name))
     proj_name = util.get_project_name_from_dir(proj_dir)
     util.ensure_valid_project_dir(proj_dir)
     dep.gather_and_write_imports(fips_dir, proj_dir, cfg_name)
